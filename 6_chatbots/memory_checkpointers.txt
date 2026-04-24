@@ -1,0 +1,82 @@
+Checkpointer (Global Store)
+|
++-- Thread_123 (Active Chat Thread)
+|
+|   |--- Checkpoint_1 (Snapshot) // [NODE: intent_classifier] - Saved BEFORE intent node runs
+|   |    {
+|   |      "state": {
+|   |        "messages": [
+|   |          {"type": "HumanMessage", "content": "Hi, I'm Ashik"},
+|   |        ],
+|   |        "system": {
+|   |          "intent": null, // Not set yet
+|   |          "current_node": "intent_classifier",
+|   |          "next_node": "respond_to_user" // Predicted next step
+|   |        }
+|   |      }
+|   |    }
+|   |
+|   |
+|   |--- Checkpoint_2 (Snapshot) // [NODE: respond_to_user] - Saved BEFORE response node runs
+|   |    {
+|   |      "state": {
+|   |        "messages": [
+|   |          {"type": "HumanMessage", "content": "Hi, I'm Ashik"},
+|   |        ],
+|   |        "system": {
+|   |          "intent": "greeting", // <-- Updated by intent_classifier node
+|   |          "current_node": "respond_to_user",
+|   |          "next_node": "wait_for_input" // New predicted path
+|   |        }
+|   |      }
+|   |    }
+|   |
+|   |
+|   |--- Checkpoint_3 (Snapshot) // [NODE: wait_for_input] - Saved AFTER response is generated
+|   |    {
+|   |      "state": {
+|   |        "messages": [
+|   |          {"type": "HumanMessage", "content": "Hi, I'm Ashik"},
+|   |          {"type": "AIMessage", "content": "Hello Ashik! How can I help you?"}, // <-- New response added
+|   |        ],
+|   |        "system": {
+|   |          "intent": "greeting",
+|   |          "current_node": "wait_for_input", // <-- This node will pause the graph
+|   |          "next_node": "END" // Path stops here for now
+|   |        }
+|   |      }
+|   |    }
+|   |
+|   |
+|   |--- Checkpoint_4 (Snapshot) // [EVENT: Human Resumes] - Saved BEFORE the graph resumes (User types second message)
+|   |    {
+|   |      "state": {
+|   |        "messages": [
+|   |          {"type": "HumanMessage", "content": "Hi, I'm Ashik"},
+|   |          {"type": "AIMessage", "content": "Hello Ashik! How can I help you?"},
+|   |          {"type": "HumanMessage", "content": "Tell me a fun fact!"}, // <-- New user input injected
+|   |        ],
+|   |        "system": {
+|   |          "intent": "greeting",
+|   |          "current_node": "wait_for_input", // We are still "at" this node, waiting
+|   |          "next_node": "intent_classifier" // The graph MUST resume by looping back to start
+|   |        }
+|   |      }
+|   |    }
+|   |
+|   |
+|   |--- Checkpoint_5 (Snapshot) // [NODE: respond_to_user] - Saved BEFORE the second response is generated
+|   |    {
+|   |      "state": {
+|   |        "messages": [
+|   |          {"type": "HumanMessage", "content": "Hi, I'm Ashik"},
+|   |          {"type": "AIMessage", "content": "Hello Ashik! How can I help you?"},
+|   |          {"type": "HumanMessage", "content": "Tell me a fun fact!"},
+|   |        ],
+|   |        "system": {
+|   |          "intent": "general_chat", // <-- Intent has updated again
+|   |          "current_node": "respond_to_user", // Second response is about to be created
+|   |          "next_node": "wait_for_input"
+|   |        }
+|   |      }
+|   |    }
