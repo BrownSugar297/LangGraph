@@ -363,7 +363,8 @@ git push origin feature/your-feature-name
 ---
 
 > **Note:** This repository is a structured learning reference. Each folder is self-contained and can be explored independently. It is recommended to follow the numbered order for the best learning progression.
->
-> ## 👨‍💻 Author
+
+
+## 👨‍💻 Author
 
 **Ashikur Rahman**
